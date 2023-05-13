@@ -45,6 +45,7 @@ class CurCommand : CommandBundle<For> {
                         }
                     }
 
+                println(result)
                 replyToMessage(ctx, result)
 
             } catch (e: Exception) {
@@ -64,7 +65,7 @@ class CurCommand : CommandBundle<For> {
         val matcher = Pattern.compile(regex, Pattern.MULTILINE).matcher(html)
 
         return if (matcher.find())
-            Jsoup.parse(matcher.group(0)).text().replace("([0-9])".toRegex(), "<b>$1</b>")
+            Jsoup.parse(matcher.group(0)).text().replace("([0-9,.]+)".toRegex(), "<code>$1</code>")
         else
             ""
     }
