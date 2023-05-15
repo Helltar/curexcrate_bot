@@ -14,23 +14,31 @@ import java.util.regex.Pattern
 
 class CurCommand : CommandBundle<For> {
 
+    private companion object {
+        const val COMMAND = "/cur"
+        const val DEFAULT_LANGUAGE_CODE = "en"
+        const val MSG_ARGUMENTS_ISEMPTY = "<code>$COMMAND 1 usd to uah</code>"
+        const val MSG_BAD_TEXT_LENGTH = "8-64 characters \uD83D\uDC40" // 👀
+        const val MSG_PARSE_ERROR = "An error occurred \uD83E\uDEE3" // 🫣
+    }
+
     override fun register(registry: CommandRegistry<For>) {
-        registry.register(SimpleCommand("/cur") { ctx ->
+        registry.register(SimpleCommand(COMMAND) { ctx ->
 
             if (ctx.arguments().isEmpty()) {
-                replyToMessage(ctx, "<code>/cur 1 usd to uah</code>")
+                replyToMessage(ctx, MSG_ARGUMENTS_ISEMPTY)
                 return@SimpleCommand
             }
 
             val query =
                 ctx.argumentsAsString().apply {
                     if (length !in 8..64) {
-                        replyToMessage(ctx, "8-64 characters \uD83D\uDC40") // 👀
+                        replyToMessage(ctx, MSG_BAD_TEXT_LENGTH)
                         return@SimpleCommand
                     }
                 }
 
-            val languageCode = ctx.message().from.languageCode ?: "en"
+            val languageCode = ctx.message().from.languageCode ?: DEFAULT_LANGUAGE_CODE
 
             try {
                 val googleHtml = getGoogleHtml(query, languageCode)
@@ -41,16 +49,15 @@ class CurCommand : CommandBundle<For> {
                 val result =
                     parseGoogleResponse(currencyRegex, googleHtml).ifEmpty {
                         parseGoogleResponse(coinRegex, googleHtml).ifEmpty {
-                            "An error occurred \uD83E\uDEE3" // 🫣
+                            MSG_PARSE_ERROR
                         }
                     }
 
-                println(result)
                 replyToMessage(ctx, result)
 
             } catch (e: Exception) {
                 LoggerFactory.getLogger(javaClass).error(e.message)
-                replyToMessage(ctx, "${e.message} \uD83E\uDEE3") // 🫣
+                replyToMessage(ctx, "${e.message}")
             }
         })
     }
