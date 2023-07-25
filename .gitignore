@@ -2,6 +2,6 @@
 .idea/
 
 build/
-scripts/
+deploy/
 
 logback.log
