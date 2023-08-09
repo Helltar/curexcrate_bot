@@ -62,6 +62,7 @@ class CurCommand : CommandBundle<For> {
     private fun replyToMessage(ctx: MessageContext, text: String) =
         ctx.replyToMessage(text)
             .setReplyToMessageId(ctx.messageId())
+            .setWebPagePreviewEnabled(false)
             .setParseMode(ParseMode.HTML)
             .callAsync(ctx.sender)
 }
