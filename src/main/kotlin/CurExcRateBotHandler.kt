@@ -10,6 +10,7 @@ class CurExcRateBotHandler(private val botConfig: BotConfig) : BotHandler(botCon
 
     init {
         commandRegistry.registerBundle(CurCommand())
+        commandRegistry.registerBundle(PrivacyCommand())
     }
 
     override fun getBotUsername() =
