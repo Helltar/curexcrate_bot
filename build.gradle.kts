@@ -1,17 +1,21 @@
 plugins {
-    kotlin("jvm") version "2.0.0"
+    kotlin("jvm") version "2.0.21"
     application
 }
 
 group = "com.helltar"
-version = "1.1.0"
+version = "1.2.0"
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation("com.annimon:tgbots-module:7.1.0")
+    implementation("com.annimon:tgbots-module:7.10.0") {
+        exclude("org.telegram", "telegrambots-webhook")
+    }
+
+    implementation("io.github.cdimascio:dotenv-kotlin:6.4.2")
     implementation("ch.qos.logback:logback-classic:1.4.14")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
@@ -20,5 +24,5 @@ dependencies {
 }
 
 application {
-    mainClass.set("CurExcRateBot")
+    mainClass.set("bot.CurExcRateBot")
 }
