@@ -1,6 +1,6 @@
-import com.annimon.tgbotsmodule.commands.CommandBundle
-import com.annimon.tgbotsmodule.commands.CommandRegistry
-import com.annimon.tgbotsmodule.commands.SimpleCommand
+package commands
+
+import com.annimon.tgbotsmodule.commands.*
 import com.annimon.tgbotsmodule.commands.authority.For
 import org.telegram.telegrambots.meta.api.methods.ParseMode
 

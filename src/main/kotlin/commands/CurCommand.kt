@@ -1,9 +1,9 @@
+package commands
+
 import Google.getGoogleFinanceLink
 import Google.getGoogleHtml
 import Google.parseGoogleResponse
-import com.annimon.tgbotsmodule.commands.CommandBundle
-import com.annimon.tgbotsmodule.commands.CommandRegistry
-import com.annimon.tgbotsmodule.commands.SimpleCommand
+import com.annimon.tgbotsmodule.commands.*
 import com.annimon.tgbotsmodule.commands.authority.For
 import com.annimon.tgbotsmodule.commands.context.MessageContext
 import org.slf4j.LoggerFactory
@@ -14,23 +14,20 @@ class CurCommand : CommandBundle<For> {
     private companion object {
         const val COMMAND = "/cur"
         const val DEFAULT_LANGUAGE_CODE = "en"
-        const val MSG_ARGUMENTS_ISEMPTY = "Example: <code>$COMMAND 1 usd to uah</code>"
-        const val MSG_BAD_TEXT_LENGTH = "8-64 characters \uD83D\uDC40" // 👀
-        const val MSG_PARSE_ERROR = "An error occurred \uD83E\uDEE3" // 🫣
     }
 
     override fun register(registry: CommandRegistry<For>) {
         registry.register(SimpleCommand(COMMAND) { ctx ->
 
             if (ctx.arguments().isEmpty()) {
-                replyToMessage(ctx, MSG_ARGUMENTS_ISEMPTY)
+                replyToMessage(ctx, "Example: <code>$COMMAND 1 usd to uah</code>")
                 return@SimpleCommand
             }
 
             val query =
                 ctx.argumentsAsString().apply {
                     if (length !in 8..64) {
-                        replyToMessage(ctx, MSG_BAD_TEXT_LENGTH)
+                        replyToMessage(ctx, "8..64 characters \uD83D\uDC40") // 👀
                         return@SimpleCommand
                     }
                 }
@@ -46,7 +43,7 @@ class CurCommand : CommandBundle<For> {
                 val result =
                     parseGoogleResponse(currencyRegex, googleHtml).ifEmpty {
                         parseGoogleResponse(coinRegex, googleHtml).ifEmpty {
-                            MSG_PARSE_ERROR
+                            "An error occurred \uD83E\uDEE3" // 🫣
                         }
                     }
 
