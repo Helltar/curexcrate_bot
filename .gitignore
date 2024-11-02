@@ -1,7 +1,6 @@
 .gradle/
 .idea/
+.kotlin/
 
 build/
 deploy/
-
-logback.log
