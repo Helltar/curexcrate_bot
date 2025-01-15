@@ -16,6 +16,8 @@ class CurCommand : CommandBundle<For> {
         const val DEFAULT_LANGUAGE_CODE = "en"
     }
 
+    private val log = LoggerFactory.getLogger(javaClass)
+
     override fun register(registry: CommandRegistry<For>) {
         registry.register(SimpleCommand(COMMAND) { ctx ->
 
@@ -37,20 +39,21 @@ class CurCommand : CommandBundle<For> {
             try {
                 val googleHtml = getGoogleHtml(query, languageCode)
 
-                val currencyRegex = "<span class=\"DFlfde eNFL1\">(.*?)<span>"
+                val currencyRegex = "<span class=\"DFlfde (.*?)<span>"
                 val coinRegex = "<span class=\"pclqee\">(.*?)</span>"
 
                 val result =
                     parseGoogleResponse(currencyRegex, googleHtml).ifEmpty {
                         parseGoogleResponse(coinRegex, googleHtml).ifEmpty {
-                            "An error occurred \uD83E\uDEE3" // 🫣
+                            log.error("Invalid google response: $googleHtml")
+                            "Error parsing Google response \uD83E\uDEE3" // 🫣
                         }
                     }
 
                 replyToMessage(ctx, "$result\n\n${getGoogleFinanceLink(googleHtml)}")
 
             } catch (e: Exception) {
-                LoggerFactory.getLogger(javaClass).error(e.message)
+                log.error(e.message)
                 replyToMessage(ctx, "${e.message}")
             }
         })
