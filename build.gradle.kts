@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.helltar"
-version = "1.3.0"
+version = "1.5.0"
 
 repositories {
     mavenCentral()
@@ -16,14 +16,12 @@ dependencies {
         exclude("org.telegram", "telegrambots-webhook")
     }
 
-    implementation("ch.qos.logback:logback-classic:1.4.14")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
     implementation("com.github.kittinunf.fuel:fuel:2.3.1")
     implementation("io.github.cdimascio:dotenv-kotlin:6.4.2")
     implementation("org.jsoup:jsoup:1.15.4")
-    implementation("org.slf4j:slf4j-api:2.0.6")
+    implementation("ch.qos.logback:logback-classic:1.5.16")
 }
 
 application {
-    mainClass.set("bot.CurExcRateBot")
+    mainClass.set("bot.CurexcrateBot")
 }
