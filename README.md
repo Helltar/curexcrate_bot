@@ -18,4 +18,3 @@ docker run --rm -d \
 ### Commands
 
 - `/cur` (Example: `/cur 1 usd to uah`)
-- `/privacy`
