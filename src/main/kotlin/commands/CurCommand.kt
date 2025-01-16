@@ -1,9 +1,12 @@
 package commands
 
-import Google.getGoogleFinanceLink
-import Google.getGoogleHtml
-import Google.parseGoogleResponse
-import com.annimon.tgbotsmodule.commands.*
+import Google.extractCoinInfo
+import Google.extractCurrencyInfo
+import Google.extractGoogleFinanceLink
+import Google.fetchGoogleHtml
+import com.annimon.tgbotsmodule.commands.CommandBundle
+import com.annimon.tgbotsmodule.commands.CommandRegistry
+import com.annimon.tgbotsmodule.commands.SimpleCommand
 import com.annimon.tgbotsmodule.commands.authority.For
 import com.annimon.tgbotsmodule.commands.context.MessageContext
 import org.slf4j.LoggerFactory
@@ -20,16 +23,15 @@ class CurCommand : CommandBundle<For> {
 
     override fun register(registry: CommandRegistry<For>) {
         registry.register(SimpleCommand(COMMAND) { ctx ->
-
             if (ctx.arguments().isEmpty()) {
-                replyToMessage(ctx, "Example: <code>$COMMAND 1 usd to uah</code>")
+                replyToMessage(ctx, "ℹ\uFE0F <code>$COMMAND 1 usd to uah</code>") // ℹ️
                 return@SimpleCommand
             }
 
             val query =
                 ctx.argumentsAsString().apply {
                     if (length !in 8..64) {
-                        replyToMessage(ctx, "8..64 characters \uD83D\uDC40") // 👀
+                        replyToMessage(ctx, "✋ 8..64 characters")
                         return@SimpleCommand
                     }
                 }
@@ -37,21 +39,17 @@ class CurCommand : CommandBundle<For> {
             val languageCode = ctx.message().from.languageCode ?: DEFAULT_LANGUAGE_CODE
 
             try {
-                val googleHtml = getGoogleHtml(query, languageCode)
-
-                val currencyRegex = "<span class=\"DFlfde (.*?)<span>"
-                val coinRegex = "<span class=\"pclqee\">(.*?)</span>"
+                val googleHtml = fetchGoogleHtml(query, languageCode)
 
                 val result =
-                    parseGoogleResponse(currencyRegex, googleHtml).ifEmpty {
-                        parseGoogleResponse(coinRegex, googleHtml).ifEmpty {
-                            log.error("Invalid google response: $googleHtml")
-                            "Error parsing Google response \uD83E\uDEE3" // 🫣
-                        }
+                    extractCurrencyInfo(googleHtml) ?: extractCoinInfo(googleHtml) ?: run {
+                        log.error("Invalid google response: $googleHtml")
+                        "\uD83E\uDEE3 Error parsing Google response" // 🫣
                     }
 
-                replyToMessage(ctx, "$result\n\n${getGoogleFinanceLink(googleHtml)}")
+                val googleFinanceLink = extractGoogleFinanceLink(googleHtml)
 
+                replyToMessage(ctx, "$result\n\n$googleFinanceLink")
             } catch (e: Exception) {
                 log.error(e.message)
                 replyToMessage(ctx, "${e.message}")
