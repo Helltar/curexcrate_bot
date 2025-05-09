@@ -11,5 +11,5 @@ object Config {
 
     private fun readEnvVar(env: String) =
         dotenv { ignoreIfMissing = true }[env].ifBlank { throw IllegalArgumentException("$env environment variable is blank") }
-            ?: throw IllegalArgumentException("Error reading $env environment variable")
+            ?: throw IllegalArgumentException("$env environment variable is missing")
 }
